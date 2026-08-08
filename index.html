@@ -64,15 +64,26 @@
             border: 1px solid rgba(45, 106, 79, 0.35);
         }
 
+        .apple-gateway-glass {
+            background: rgba(10, 30, 24, 0.75);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
         .silk-transition {
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .emerald-glow {
             box-shadow: 0 0 25px rgba(45, 106, 79, 0.35);
+        }
+
+        .apple-glow {
+            box-shadow: 0 0 50px rgba(45, 106, 79, 0.5), inset 0 0 20px rgba(255, 255, 255, 0.1);
         }
 
         .shimmer-text {
@@ -87,6 +98,14 @@
             background-size: 200% auto;
             color: transparent;
             -webkit-background-clip: text;
+        }
+
+        @keyframes appleScaleIn {
+            0% { opacity: 0; transform: scale(0.92) translateY(10px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .animate-apple-in {
+            animation: appleScaleIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
     </style>
 </head>
@@ -189,7 +208,7 @@
 
     <!-- شبكة العرض -->
     <main class="max-w-md mx-auto px-4">
-        <div id="shops-container" class="grid grid-cols-3 gap-y-6 gap-x-3 justify-items-center"></div>
+        <div id="shops-container" class="grid grid-cols-2 gap-3.5"></div>
     </main>
 
     <!-- مميزات المنصة -->
@@ -233,28 +252,6 @@
         </p>
     </footer>
 
-    <!-- النافذة المنبثقة للطلب/التجهيز -->
-    <div id="info-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-white dark:bg-maladhCard rounded-3xl max-w-xs w-full p-6 text-center border border-emeraldAncient/20 dark:border-emeraldLight/40 shadow-2xl space-y-4 relative">
-            <div class="w-20 h-20 rounded-full mx-auto p-1 bg-gradient-to-tr from-emeraldAncient via-emeraldLight to-emeraldDark emerald-glow">
-                <img id="modal-shop-image" src="" alt="شعار المحل" class="w-full h-full rounded-full object-cover">
-            </div>
-            <div>
-                <h3 id="modal-shop-name" class="text-lg font-black text-emeraldDark dark:text-white"></h3>
-                <span id="modal-shop-cat" class="inline-block mt-1 text-[10px] bg-emeraldLight/20 text-emeraldAncient dark:text-emerald-100 px-3 py-0.5 rounded-full font-bold border border-emeraldLight/30"></span>
-            </div>
-            <p id="modal-shop-desc" class="text-xs text-emerald-900 dark:text-emerald-100/90 leading-relaxed bg-gray-100 dark:bg-emeraldDark/40 p-3.5 rounded-2xl border border-emeraldAncient/10 dark:border-emeraldLight/20 text-right font-medium"></p>
-            <div class="flex gap-2">
-                <button id="modal-open-link" class="flex-1 bg-emeraldAncient dark:bg-white text-white dark:text-emeraldDark font-black py-2.5 rounded-2xl text-xs shadow-lg silk-transition">
-                    دخول الموقع الآن ➔
-                </button>
-                <button onclick="closeInfoModal()" class="px-4 bg-gray-200 dark:bg-white/10 text-gray-800 dark:text-white font-bold py-2.5 rounded-2xl text-xs">
-                    إغلاق
-                </button>
-            </div>
-        </div>
-    </div>
-
     <!-- نافذة اختيارات الفروع -->
     <div id="branch-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-white dark:bg-maladhCard rounded-3xl max-w-xs w-full p-5 text-center border border-emeraldAncient/20 dark:border-emeraldLight/40 shadow-2xl space-y-3">
@@ -266,9 +263,40 @@
         </div>
     </div>
 
+    <!-- نافذة منبثقة (Modal) لطلب التوظيف -->
+    <div id="hire-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white dark:bg-maladhCard rounded-3xl max-w-xs w-full p-6 text-center border border-emeraldAncient/20 dark:border-emeraldLight/40 shadow-2xl space-y-4 relative">
+            <button onclick="closeHireModal()" class="absolute top-3 left-3 text-gray-400 hover:text-white text-base font-bold bg-black/20 w-7 h-7 rounded-full flex items-center justify-center">✕</button>
+            
+            <div class="w-16 h-16 rounded-full p-[2px] bg-gradient-to-tr from-emeraldAncient via-emeraldLight to-emeraldDark mx-auto emerald-glow">
+                <img id="modal-shop-img" src="" alt="" class="w-full h-full rounded-full object-cover">
+            </div>
+
+            <div>
+                <h3 id="modal-shop-name" class="text-sm font-black text-emeraldDark dark:text-white"></h3>
+                <span class="inline-block bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[9px] font-black px-2 py-0.5 rounded-full my-1 border border-amber-500/20">
+                    💼 مطلوب موظف فوراً (نموذج تجريبي)
+                </span>
+                <p id="modal-shop-desc" class="text-[11px] text-emerald-900 dark:text-emerald-100/80 font-bold mt-1 leading-relaxed">
+                    يعلن المحل عن توفر شاغر وظيفي. تواصل مباشرة عبر الأزرار أدناه للتقديم.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2 pt-2">
+                <a id="modal-phone-btn" href="#" class="bg-emeraldAncient hover:bg-emeraldLight text-white font-black py-2.5 px-2 rounded-xl text-[11px] shadow-md flex items-center justify-center gap-1.5 silk-transition">
+                    <span>📞</span> اتصال مباشر
+                </a>
+                <a id="modal-wa-btn" href="#" target="_blank" class="bg-green-600 hover:bg-green-700 text-white font-black py-2.5 px-2 rounded-xl text-[11px] shadow-md flex items-center justify-center gap-1.5 silk-transition">
+                    <span>💬</span> واتساب
+                </a>
+            </div>
+        </div>
+    </div>
+
     <script>
         const platformData = {
             ownerWhatsApp: "0504681288",
+            ownerPhone: "0504681288",
             branches: [
                 { id: "al-laqiya", name: "اللقية", active: true },
                 { id: "segev-shalom", name: "الكسيفة", active: false },
@@ -281,52 +309,60 @@
                     name: "مكسيكاني",
                     branchId: "al-laqiya",
                     category: "مطاعم",
-                    description: "أشهى الوجبات والمأكولات المكسيكية المميزة بتتبيلات فريدة.",
+                    description: "مشروع تجريبي لعرض نظام الطلبات الذكي.",
                     image: "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?q=80&w=1000&auto=format&fit=crop",
                     url: "https://albraka-netizen.github.io/mak/",
-                    isVIP: false,
-                    isPending: false,
-                    rating: "",
-                    hasPreviewModal: false
+                    phone: "0504681288",
+                    whatsapp: "972504681288",
+                    isJoined: false,
+                    isPreparing: false,
+                    isDemo: true,
+                    showHireButton: true 
                 },
                 {
                     id: 2,
                     name: "كافيه مَلاذ",
                     branchId: "al-laqiya",
                     category: "كافيهات",
-                    description: "كافيه مَلاذ هو النموذج الافتراضي الذي صممه فريق مَلاذ الرقمي بنفس اسمه، ليكون واجهة استعراضية حية توضح لأصحاب المحلات كيف يمكن أن يبدو كافيه أحلامهم مستقبلاً بلمسة تقنية وعصرية.",
+                    description: "النموذج الافتراضي الخاص بفريق مَلاذ الرقمي.",
                     image: "https://images.unsplash.com/photo-1507133750040-4a8f57021571?q=80&w=1287&auto=format&fit=crop",
                     url: "https://albraka-netizen.github.io/coffe1/",
-                    isVIP: true,
-                    isPending: false,
-                    rating: "",
-                    hasPreviewModal: true
+                    phone: "0504681288",
+                    whatsapp: "972504681288",
+                    isJoined: false,
+                    isPreparing: false,
+                    isDemo: true,
+                    showHireButton: false 
                 },
                 {
                     id: 3,
                     name: "كافيه عُكاظ",
                     branchId: "al-laqiya",
                     category: "كافيهات",
-                    description: "قهوة ذات جودة عالية ونكهة خاصة لأصحاب الذوق الرفيع.",
+                    description: "",
                     image: "https://i.imgur.com/Dm82D7G.jpeg",
                     url: "https://albraka-netizen.github.io/okaad/#categories-section",
-                    isVIP: false,
-                    isPending: false,
-                    rating: "",
-                    hasPreviewModal: false
+                    phone: "0504681288",
+                    whatsapp: "972504681288",
+                    isJoined: true,
+                    isPreparing: false,
+                    isDemo: false,
+                    showHireButton: false 
                 },
                 {
                     id: 4,
                     name: "دكانة طنقر",
                     branchId: "al-laqiya",
                     category: "سوپرماركت",
-                    description: "يتم تجهيز الصفحة الرسمية حالياً لتكون متاحة قريباً جداً عبر منصة مَلاذ.",
+                    description: "دكانة طنقر قيد التجهيز حالياً لتكون متاحة قريباً عبر منصة مَلاذ.",
                     image: "https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=1000&auto=format&fit=crop",
-                    url: "",
-                    isVIP: false,
-                    isPending: true,
-                    rating: "قريباً",
-                    hasPreviewModal: true
+                    url: "#",
+                    phone: "0504681288",
+                    whatsapp: "972504681288",
+                    isJoined: false,
+                    isPreparing: true,
+                    isDemo: false,
+                    showHireButton: false
                 }
             ]
         };
@@ -435,16 +471,14 @@
 
             if (matches.length > 0) {
                 dropdown.innerHTML = matches.map(shop => `
-                    <div onclick="handleShopClick(${shop.id})" class="flex items-center gap-3 p-3 hover:bg-emeraldLight/10 dark:hover:bg-emeraldDark/40 cursor-pointer border-b border-emeraldAncient/10 dark:border-emeraldLight/20 last:border-none">
+                    <div onclick="${shop.isPreparing ? 'alert(\'دكانة طنقر قيد التجهيز حالياً\')' : `window.open('${shop.url}', '_blank')`}" class="flex items-center gap-3 p-3 hover:bg-emeraldLight/10 dark:hover:bg-emeraldDark/40 cursor-pointer border-b border-emeraldAncient/10 dark:border-emeraldLight/20 last:border-none">
                         <img src="${shop.image}" alt="${shop.name}" class="w-10 h-10 rounded-full object-cover">
                         <div class="flex-1 text-right">
-                            <h4 class="text-xs font-bold text-emeraldDark dark:text-white flex items-center gap-1">
-                                ${shop.name}
-                                ${shop.isPending ? '<span class="text-[8px] bg-amber-500/20 text-amber-600 dark:text-amber-300 px-1.5 py-0.2 rounded-full">قيد التجهيز</span>' : ''}
+                            <h4 class="text-xs font-bold text-emeraldDark dark:text-white">
+                                ${shop.name} ${shop.isDemo ? '<span class="text-[9px] text-emerald-600 dark:text-emerald-400 font-normal">(تجريبي)</span>' : ''}
                             </h4>
-                            <p class="text-[9px] text-emerald-800 dark:text-emerald-100/60 font-bold">${shop.category}</p>
                         </div>
-                        <span class="text-[10px] text-emeraldAncient dark:text-white font-bold">${shop.isPending ? 'معاينة' : 'فتح ➔'}</span>
+                        <span class="text-[10px] text-emeraldAncient dark:text-white font-bold">${shop.isPreparing ? 'قريباً' : 'فتح ➔'}</span>
                     </div>
                 `).join('');
                 dropdown.classList.remove('hidden');
@@ -456,49 +490,28 @@
             renderShops(matches);
         }
 
-        function handleShopClick(shopId) {
-            document.getElementById('suggestions-box').classList.add('hidden');
-            const shop = platformData.shops.find(s => s.id === shopId);
-            if (!shop) return;
-
-            if (shop.isPending) {
-                document.getElementById('modal-shop-name').textContent = shop.name;
-                document.getElementById('modal-shop-cat').textContent = shop.category;
-                document.getElementById('modal-shop-desc').textContent = shop.description;
-                document.getElementById('modal-shop-image').src = shop.image;
-                
-                const openBtn = document.getElementById('modal-open-link');
-                openBtn.textContent = "الموقع قيد التجهيز";
-                openBtn.onclick = null;
-                openBtn.className = "flex-1 bg-gray-300 dark:bg-white/20 text-gray-500 dark:text-gray-400 font-bold py-2.5 rounded-2xl text-xs cursor-not-allowed";
-                
-                document.getElementById('info-modal').classList.remove('hidden');
-            } else if (shop.hasPreviewModal) {
-                document.getElementById('modal-shop-name').textContent = shop.name;
-                document.getElementById('modal-shop-cat').textContent = shop.category;
-                document.getElementById('modal-shop-desc').textContent = shop.description;
-                document.getElementById('modal-shop-image').src = shop.image;
-                
-                const openBtn = document.getElementById('modal-open-link');
-                openBtn.textContent = "دخول الموقع الآن ➔";
-                openBtn.className = "flex-1 bg-emeraldAncient dark:bg-white text-white dark:text-emeraldDark font-black py-2.5 rounded-2xl text-xs shadow-lg silk-transition";
-                openBtn.onclick = () => window.open(shop.url, '_blank');
-                
-                document.getElementById('info-modal').classList.remove('hidden');
-            } else {
-                window.open(shop.url, '_blank');
-            }
-        }
-
-        function closeInfoModal() {
-            document.getElementById('info-modal').classList.add('hidden');
-        }
-
         document.addEventListener('click', (e) => {
             if (!e.target.closest('#search-input') && !e.target.closest('#suggestions-box')) {
                 document.getElementById('suggestions-box').classList.add('hidden');
             }
         });
+
+        function openHireModal(shopName, shopImage, shopPhone, shopWhatsapp) {
+            document.getElementById('modal-shop-name').textContent = shopName;
+            document.getElementById('modal-shop-img').src = shopImage;
+            document.getElementById('modal-shop-desc').textContent = `هذا المحل عبارة عن نموذج تجريبي لعرض خدمات فريق مَلاذ الرقمي. تواصل مباشرة عبر الاتصال أو الواتساب للاستفسار.`;
+            
+            document.getElementById('modal-phone-btn').href = `tel:${shopPhone}`;
+            
+            const waText = encodeURIComponent(`مرحباً، أود الاستفسار بخصوص النموذج التجريبي لـ ${shopName}.`);
+            document.getElementById('modal-wa-btn').href = `https://wa.me/${shopWhatsapp}?text=${waText}`;
+            
+            document.getElementById('hire-modal').classList.remove('hidden');
+        }
+
+        function closeHireModal() {
+            document.getElementById('hire-modal').classList.add('hidden');
+        }
 
         function renderShops(customList = null) {
             const container = document.getElementById('shops-container');
@@ -518,7 +531,10 @@
                 return;
             }
 
-            const branchShops = platformData.shops.filter(s => s.branchId === currentBranchId);
+            let branchShops = platformData.shops.filter(s => s.branchId === currentBranchId);
+            
+            branchShops.sort((a, b) => (b.isJoined ? 1 : 0) - (a.isJoined ? 1 : 0));
+
             let listToRender = customList || branchShops.filter(shop => currentCategory === 'الكل' || shop.category === currentCategory);
 
             if (listToRender.length === 0) {
@@ -532,39 +548,62 @@
             }
 
             container.innerHTML = listToRender.map(shop => `
-                <div onclick="handleShopClick(${shop.id})" class="group cursor-pointer flex flex-col items-center text-center space-y-2">
+                <!-- الكارت بأكمله أصبح تفاعلياً بلمسة ناعمة وفخمة (Active Scale & Hover Glow) -->
+                <div onclick="${shop.isPreparing ? '' : `window.open('${shop.url}', '_blank')`}" 
+                     class="group maladh-glass p-3.5 rounded-3xl flex flex-col justify-between items-center text-center relative overflow-hidden border border-emeraldAncient/15 dark:border-emeraldLight/30 silk-transition hover:scale-[1.03] hover:shadow-2xl hover:border-emeraldLight active:scale-95 ${shop.isPreparing ? 'cursor-default' : 'cursor-pointer'}">
                     
-                    <div class="relative w-20 h-20 sm:w-24 sm:h-24 rounded-full p-[2px] bg-gradient-to-tr from-emeraldAncient via-emeraldLight to-emeraldDark emerald-glow silk-transition group-hover:scale-105 group-active:scale-95">
-                        
-                        <div class="w-full h-full rounded-full overflow-hidden relative bg-emeraldDark border-2 border-white dark:border-emeraldDark">
-                            <img src="${shop.image}" alt="${shop.name}" class="w-full h-full object-cover silk-transition group-hover:scale-110 ${shop.isPending ? 'opacity-70 grayscale-[30%]' : ''}">
-                            
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
-                            
-                            <span class="absolute bottom-1 inset-x-0 text-center text-[8px] font-black text-white">
-                                ${shop.isPending ? 'قريباً' : shop.rating}
-                            </span>
-                        </div>
+                    ${shop.isJoined ? `
+                        <span class="absolute top-2.5 right-2.5 bg-emeraldAncient dark:bg-white text-white dark:text-emeraldDark font-black text-[8px] px-2.5 py-0.5 rounded-full shadow-md z-10 flex items-center gap-1">
+                            <span>✓</span> منضم
+                        </span>
+                    ` : ''}
 
-                        ${shop.isPending ? `
-                            <span class="absolute -top-1 -right-1 bg-amber-500 text-white font-black text-[7px] px-2 py-0.5 rounded-full shadow-md border border-white dark:border-emeraldAncient">
-                                قيد التجهيز
-                            </span>
-                        ` : shop.isVIP ? `
-                            <span class="absolute -top-1 -right-1 bg-emeraldAncient dark:bg-white text-white dark:text-emeraldDark font-black text-[7px] px-2 py-0.5 rounded-full shadow-md border border-white dark:border-emeraldAncient">
-                                VIP
-                            </span>
-                        ` : ''}
+                    ${shop.isDemo ? `
+                        <span class="absolute top-2.5 right-2.5 bg-blue-600 text-white font-black text-[8px] px-2 py-0.5 rounded-full shadow-md z-10 flex items-center gap-1">
+                            <span>🧪</span> نموذج تجريبي
+                        </span>
+                    ` : ''}
+
+                    ${shop.isPreparing ? `
+                        <span class="absolute top-2.5 right-2.5 bg-amber-600 text-white font-black text-[8px] px-2.5 py-0.5 rounded-full shadow-md z-10 flex items-center gap-1">
+                            <span>⏳</span> قيد التجهيز
+                        </span>
+                    ` : ''}
+
+                    <!-- الصورة مع تفاعل النعومة -->
+                    <div class="relative mt-2 mb-2">
+                        <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full p-[2px] bg-gradient-to-tr from-emeraldAncient via-emeraldLight to-emeraldDark emerald-glow silk-transition group-hover:rotate-3 group-hover:scale-105">
+                            <div class="w-full h-full rounded-full overflow-hidden relative bg-emeraldDark border-2 border-white dark:border-emeraldDark">
+                                <img src="${shop.image}" alt="${shop.name}" class="w-full h-full object-cover silk-transition group-hover:scale-110">
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="w-full px-1">
-                        <h3 class="text-[11px] sm:text-xs font-black text-emeraldDark dark:text-white truncate group-hover:text-emeraldLight silk-transition">
+                    <div class="w-full space-y-1 mb-3">
+                        <h3 class="text-xs font-black text-emeraldDark dark:text-white truncate group-hover:text-emeraldLight silk-transition">
                             ${shop.name}
                         </h3>
-                        <span class="text-[9px] text-emerald-800 dark:text-emerald-100/60 font-bold block truncate">
-                            ${shop.category}
-                        </span>
+                        <p class="text-[9px] text-emerald-800 dark:text-emerald-100/70 line-clamp-1 font-bold">
+                            ${shop.description}
+                        </p>
                     </div>
+
+                    <!-- الزر أو البادج السفلي -->
+                    ${shop.isPreparing ? `
+                        <div class="w-full bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold py-1.5 px-2 rounded-xl text-[10px] border border-amber-500/20 text-center">
+                            قريباً...
+                        </div>
+                    ` : shop.showHireButton ? `
+                        <button onclick="openHireModal('${shop.name}', '${shop.image}', '${shop.phone}', '${shop.whatsapp}'); event.stopPropagation();" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-black py-1.5 px-2 rounded-xl text-[10px] shadow-md silk-transition flex items-center justify-center gap-1 active:scale-95">
+                            <span>طلب توظيف</span>
+                            <span>💼</span>
+                        </button>
+                    ` : `
+                        <div class="w-full bg-emeraldAncient dark:bg-white text-white dark:text-emeraldDark font-black py-1.5 px-2 rounded-xl text-[10px] shadow-md silk-transition flex items-center justify-center gap-1 group-hover:bg-emeraldLight dark:group-hover:bg-emerald-100">
+                            <span>دخول الموقع</span>
+                            <span class="group-hover:-translate-x-1 transition-transform">➔</span>
+                        </div>
+                    `}
 
                 </div>
             `).join('');
